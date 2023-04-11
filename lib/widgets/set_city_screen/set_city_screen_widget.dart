@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:weather_app/app_routes/app_routes.dart';
 import 'package:weather_app/theme/app_input_decorations.dart';
 
+/*
+Виджет экрана установки города
+ */
 class SetCityScreen extends StatelessWidget {
   const SetCityScreen({Key? key}) : super(key: key);
 

@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 
+/*
+Виджет экрана со списком из 3 элементов: информация о погоде за 3 дня,
+где самый первый элемент с самой низкой температурой.
+ */
 class ThreeDaysWeatherScreenWidget extends StatelessWidget {
   const ThreeDaysWeatherScreenWidget({Key? key}) : super(key: key);
 
