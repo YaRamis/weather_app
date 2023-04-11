@@ -3,8 +3,11 @@ import 'package:json_annotation/json_annotation.dart';
 part 'weather.g.dart';
 
 /*
-Класс Weather.
+Класс Weather содержит данные об описании погоды.
 Преобразование из json в объект Weather.
+
+Class Weather contains data of weather description.
+Making Weather object from json.
  */
 @JsonSerializable()
 class Weather {

@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 /*
 Виджет экрана со списком из 3 элементов: информация о погоде за 3 дня,
 где самый первый элемент с самой низкой температурой.
+
+Widget of screen with 3 elements: weather information in 3 days.
+First element has lowest temperature.
  */
 class ThreeDaysWeatherScreenWidget extends StatelessWidget {
   const ThreeDaysWeatherScreenWidget({Key? key}) : super(key: key);
@@ -25,7 +28,7 @@ class ThreeDaysWeatherScreenWidget extends StatelessWidget {
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(50),
-                  color: Colors.black,
+                  color: Colors.teal,
                 ),
               ),
             );

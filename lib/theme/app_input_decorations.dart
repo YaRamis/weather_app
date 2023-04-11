@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
 
 abstract class AppInputDecoration {
-  static InputDecoration defaultInputDecoration = InputDecoration(
+  static InputDecoration setCityInputDecoration = InputDecoration(
     enabledBorder: OutlineInputBorder(
-        borderRadius: const BorderRadius.all(Radius.circular(50)),
-        borderSide: BorderSide(
-          color: Colors.teal.shade800,
-          width: 2,
-        )),
+      borderRadius: const BorderRadius.all(Radius.circular(50)),
+      borderSide: BorderSide(
+        color: Colors.teal.shade800,
+        width: 2,
+      ),
+    ),
     focusedBorder: const OutlineInputBorder(
-        borderRadius: BorderRadius.all(Radius.circular(50)),
-        borderSide: BorderSide(color: Colors.white, width: 2)),
+      borderRadius: BorderRadius.all(Radius.circular(50)),
+      borderSide: BorderSide(color: Colors.white, width: 2),
+    ),
     contentPadding: const EdgeInsets.symmetric(
       horizontal: 15,
-      vertical: 10,
+      vertical: 20,
     ),
     hintText: 'Укажите город',
     hintStyle: TextStyle(color: Colors.teal.shade800),

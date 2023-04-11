@@ -4,6 +4,11 @@ import 'package:weather_app/widgets/three_days_weather_screen/three_days_weather
 
 import '../widgets/weather_detailed_info_screen/weather_detailed_info.dart';
 
+/*
+Route-ы экранов приложения.
+
+Routes of app screens.
+ */
 abstract class AppRoutes {
   static String setCityScreen = '/set_city_screen';
   static String weatherDetailedInfoScreen = '/weather_detailed_info_screen';

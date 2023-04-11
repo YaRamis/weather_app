@@ -15,7 +15,7 @@ class App extends StatelessWidget {
         dividerColor: Colors.white,
       ),
       routes: AppRoutes.routes,
-      initialRoute: AppRoutes.setCityScreen,
+      initialRoute: AppRoutes.weatherDetailedInfoScreen,
     );
   }
 }

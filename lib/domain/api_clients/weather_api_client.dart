@@ -5,9 +5,11 @@ import 'package:weather_app/domain/entities/daily_weather_forecast.dart';
 import 'package:weather_app/domain/entities/main_weather_data.dart';
 
 /*
-Информация о погоде приходит из API "OpenWeatherMap".
-
+Данные о погоде приходит из API "OpenWeatherMap".
 API клиент WeatherApiClient для работы с API.
+
+Weather data comes from "OpenWeatherMap" API.
+API client WeatherApiClient to work with API.
  */
 class WeatherApiClient {
   final _apiKey = 'beb696a7d29235e2bf719335edb5fb06';

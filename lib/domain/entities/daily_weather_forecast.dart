@@ -6,8 +6,11 @@ import 'daily_temperature.dart';
 part 'daily_weather_forecast.g.dart';
 
 /*
-Класс DailyWeatherForecast.
+Класс DailyWeatherForecast содержит данные суточной погоды.
 Преобразование из json в объект DailyWeatherForecast.
+
+Class DailyWeatherForecast contains data of daily weather.
+Making DailyWeatherForecast object from json.
  */
 @JsonSerializable()
 class DailyWeatherForecast {
