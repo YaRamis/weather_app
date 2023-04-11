@@ -6,6 +6,7 @@ import 'daily_temperature.dart';
 part 'daily_weather_forecast.g.dart';
 
 /*
+Класс DailyWeatherForecast.
 Преобразование из json в объект DailyWeatherForecast.
  */
 @JsonSerializable()

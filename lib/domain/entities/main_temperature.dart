@@ -3,6 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'main_temperature.g.dart';
 
 /*
+Класс MainTemperature.
 Преобразование из json в объект MainTemperature.
  */
 @JsonSerializable()

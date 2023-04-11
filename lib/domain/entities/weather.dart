@@ -3,6 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'weather.g.dart';
 
 /*
+Класс Weather.
 Преобразование из json в объект Weather.
  */
 @JsonSerializable()

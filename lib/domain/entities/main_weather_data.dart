@@ -5,6 +5,7 @@ import 'package:weather_app/domain/entities/main_wind.dart';
 part 'main_weather_data.g.dart';
 
 /*
+Класс MainWeatherData.
 Преобразование из json в объект MainWeatherData.
  */
 @JsonSerializable()
