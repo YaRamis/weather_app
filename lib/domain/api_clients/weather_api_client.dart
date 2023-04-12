@@ -6,18 +6,18 @@ import 'package:weather_app/domain/entities/main_weather_data.dart';
 
 /*
 Данные о погоде приходит из API "OpenWeatherMap".
-API клиент WeatherApiClient для работы с API.
+API клиент `WeatherApiClient` для работы с API.
 
 Weather data comes from "OpenWeatherMap" API.
-API client WeatherApiClient to work with API.
+API client `WeatherApiClient` to work with API.
  */
-class WeatherApiClient {
-  final _apiKey = 'beb696a7d29235e2bf719335edb5fb06';
+abstract class WeatherApiClient {
+  static final _apiKey = 'beb696a7d29235e2bf719335edb5fb06';
 
-  final client = HttpClient();
+  static final client = HttpClient();
 
-  // Получение текущей погоды в городе ${cityName}.
-  Future<MainWeatherData> getCurrentWeather(String cityName) async {
+  // Получение текущей погоды в городе `cityName`.
+  static Future<MainWeatherData> getCurrentWeather(String cityName) async {
     final url = Uri.parse(
         'https://api.openweathermap.org/data/2.5/weather?q=$cityName&appid=$_apiKey&units=metric');
 
@@ -26,8 +26,8 @@ class WeatherApiClient {
     return MainWeatherData.fromJson(json);
   }
 
-  // Получение почасовой погоды в городе ${cityName}.
-  Future<List<MainWeatherData>> getHourlyWeather(String cityName) async {
+  // Получение почасовой погоды в городе `cityName`.
+  static Future<List<MainWeatherData>> getHourlyWeather(String cityName) async {
     final url = Uri.parse(
         'https://pro.openweathermap.org/data/2.5/forecast/hourly?q=$cityName&appid=$_apiKey&units=metric');
 
@@ -39,8 +39,8 @@ class WeatherApiClient {
         .toList();
   }
 
-  // Получение посуточной погоды в городе ${cityName} за ${daysCount} дней.
-  Future<List<DailyWeatherForecast>> getDailyWeather(
+  // Получение посуточной погоды в городе `cityName` за `daysCount` дней.
+  static Future<List<DailyWeatherForecast>> getDailyWeather(
       String cityName, String daysCount) async {
     final url = Uri.parse(
         'https://api.openweathermap.org/data/2.5/forecast/daily?q=$cityName&cnt=$daysCount&appid=$_apiKey&units=metric');
@@ -53,7 +53,7 @@ class WeatherApiClient {
         .toList();
   }
 
-  Future<dynamic> _getJsonFromUrl(Uri url) async {
+  static Future<dynamic> _getJsonFromUrl(Uri url) async {
     return jsonDecode((await (await (await client.getUrl(url)).close())
             .transform(utf8.decoder)
             .toList())

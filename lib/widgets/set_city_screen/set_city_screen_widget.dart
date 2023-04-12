@@ -1,7 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:weather_app/app_routes/app_routes.dart';
-import 'package:weather_app/theme/app_button_styles.dart';
-import 'package:weather_app/theme/app_input_decorations.dart';
+// import 'package:flutter/material.dart';
+// import 'package:weather_app/app_routes/app_routes.dart';
+// import 'package:weather_app/theme/app_button_styles.dart';
+// import 'package:weather_app/theme/app_input_decorations.dart';
+
+part of '../app.dart';
 
 /*
 Виджет экрана установки города.
@@ -14,35 +16,40 @@ class SetCityScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      child: Container(
-        color: Colors.teal,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            const SizedBox(height: 120),
-            Text(
-              'YaRamis',
-              style: TextStyle(
-                color: Colors.teal.shade800,
-                fontSize: 50,
-                fontWeight: FontWeight.bold,
+      child: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).requestFocus(FocusNode());
+        },
+        child: Container(
+          color: Colors.teal,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              const SizedBox(height: 120),
+              Text(
+                'YaRamis',
+                style: TextStyle(
+                  color: Colors.teal.shade800,
+                  fontSize: 50,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-            Text(
-              'Weather App',
-              style: TextStyle(
-                color: Colors.teal.shade800,
-                fontSize: 50,
-                fontWeight: FontWeight.bold,
+              Text(
+                'Weather App',
+                style: TextStyle(
+                  color: Colors.teal.shade800,
+                  fontSize: 50,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-            const SizedBox(height: 40),
-            const _SetCityIcon(),
-            const SizedBox(height: 20),
-            const _SetCityTextField(),
-            const SizedBox(height: 20),
-            const _SetCityElevatedButton(),
-          ],
+              const SizedBox(height: 40),
+              const _SetCityIcon(),
+              const SizedBox(height: 20),
+              const _SetCityTextField(),
+              const SizedBox(height: 20),
+              const _SetCityElevatedButton(),
+            ],
+          ),
         ),
       ),
     );
@@ -57,13 +64,15 @@ class _SetCityElevatedButton extends StatelessWidget {
     return ElevatedButton(
       style: AppButtonStyles.setCityButtonStyle,
       onPressed: () {
-        Navigator.of(context)
-            .pushReplacementNamed(AppRoutes.weatherDetailedInfoScreen);
+        if (_cityName != '') {
+          Navigator.of(context)
+              .pushReplacementNamed(AppRoutes.weatherDetailedInfoScreen);
+        }
       },
       child: const Padding(
         padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
         child: Text(
-          'Подтвердить',
+          'Submit',
           style: TextStyle(fontSize: 25),
         ),
       ),
@@ -92,6 +101,10 @@ class _SetCityTextField extends StatelessWidget {
     return SizedBox(
       width: 300,
       child: TextField(
+        onChanged: (string) async {
+          _cityName = string;
+          await _setCityName();
+        },
         decoration: AppInputDecoration.setCityInputDecoration,
         style: const TextStyle(
           color: Colors.white,

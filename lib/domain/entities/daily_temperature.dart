@@ -3,11 +3,11 @@ import 'package:json_annotation/json_annotation.dart';
 part 'daily_temperature.g.dart';
 
 /*
-Класс DailyTemperature содержит данные суточной температуры.
-Преобразование из json в объект DailyTemperature.
+Класс `DailyTemperature` содержит данные суточной температуры.
+Преобразование из json в объект `DailyTemperature`.
 
-Class DailyTemperature contains data of daily temperature.
-Making DailyTemperature object from json.
+Class `DailyTemperature` contains data of daily temperature.
+Making `DailyTemperature` object from json.
  */
 @JsonSerializable()
 class DailyTemperature {

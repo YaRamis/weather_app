@@ -1,4 +1,6 @@
-import 'package:flutter/material.dart';
+// import 'package:flutter/material.dart';
+
+part of '../app.dart';
 
 /*
 Виджет экрана со списком из 3 элементов: информация о погоде за 3 дня,
@@ -30,7 +32,10 @@ class ThreeDaysWeatherScreenWidget extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         shadowColor: Colors.transparent,
-        title: const Text('Weather next 3 days'),
+        title: Text(
+          'Weather next 3 days ($_cityName)',
+          style: const TextStyle(fontSize: 18),
+        ),
       ),
       backgroundColor: Colors.teal.shade800,
       body: Column(

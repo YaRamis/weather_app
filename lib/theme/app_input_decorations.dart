@@ -17,7 +17,7 @@ abstract class AppInputDecoration {
       horizontal: 15,
       vertical: 20,
     ),
-    hintText: 'Укажите город',
+    hintText: 'Write city name',
     hintStyle: TextStyle(color: Colors.teal.shade800),
   );
 }

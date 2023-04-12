@@ -3,11 +3,11 @@ import 'package:json_annotation/json_annotation.dart';
 part 'main_temperature.g.dart';
 
 /*
-Класс MainTemperature содержит данные текущей/почасовой температуры.
-Преобразование из json в объект MainTemperature.
+Класс `MainTemperature` содержит данные текущей/почасовой температуры.
+Преобразование из json в объект `MainTemperature`.
 
-Class MainTemperature contains data of current/hourly temperature.
-Making MainTemperature object from json.
+Class `MainTemperature` contains data of current/hourly temperature.
+Making `MainTemperature` object from json.
  */
 @JsonSerializable()
 class MainTemperature {

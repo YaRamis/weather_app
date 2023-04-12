@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:weather_app/widgets/set_city_screen/set_city_screen_widget.dart';
-import 'package:weather_app/widgets/three_days_weather_screen/three_days_weather_screen_widget.dart';
 
-import '../widgets/weather_detailed_info_screen/weather_detailed_info.dart';
+import '../widgets/app.dart';
 
 /*
 Route-ы экранов приложения.
