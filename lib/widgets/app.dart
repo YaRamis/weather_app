@@ -10,12 +10,13 @@ class App extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Weather App',
       theme: ThemeData(
+        fontFamily: 'Comfortaa',
         appBarTheme: AppBarTheme(backgroundColor: Colors.teal.shade800),
         scaffoldBackgroundColor: Colors.teal,
         dividerColor: Colors.white,
       ),
       routes: AppRoutes.routes,
-      initialRoute: AppRoutes.weatherDetailedInfoScreen,
+      initialRoute: AppRoutes.threeDaysWeatherScreen,
     );
   }
 }

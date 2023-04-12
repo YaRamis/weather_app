@@ -25,5 +25,14 @@ dev_dependencies:
   json_serializable: ^6.6.1
 
 flutter:
+  fonts:
+    - family: Comfortaa
+      fonts:
+        - asset: fonts/Comfortaa-Regular.ttf
+        - asset: fonts/Comfortaa-light.ttf
+          weight: 300
+        - asset: fonts/Comfortaa-Bold.ttf
+          weight: 700
+
 
   uses-material-design: true

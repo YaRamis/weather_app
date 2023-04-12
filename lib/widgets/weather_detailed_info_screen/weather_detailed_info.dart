@@ -6,11 +6,29 @@ class WeatherDetailedInfoScreen extends StatelessWidget {
 
   const WeatherDetailedInfoScreen({Key? key}) : super(key: key);
 
+  List<_ExactHourWeatherWidget> _getExactHourWeatherWidgetList(
+      {int count = 6}) {
+    List<_ExactHourWeatherWidget> list = [];
+
+    for (int i = 0; i < count; i++) {
+      list.add(const _ExactHourWeatherWidget(
+        hour: 12,
+        temperature: 20,
+      ));
+    }
+
+    return list;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final exactHourWeatherWidgetList = _getExactHourWeatherWidgetList();
     return Scaffold(
       appBar: AppBar(
-        title: Text(cityName),
+        title: Text(
+          cityName,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
         shadowColor: Colors.transparent,
         actions: const [
           _ResetCityIconButton(),
@@ -49,7 +67,10 @@ class WeatherDetailedInfoScreen extends StatelessWidget {
                       SizedBox(width: 10),
                       Text(
                         '25°',
-                        style: TextStyle(fontSize: 100, color: Colors.white),
+                        style: TextStyle(
+                            fontSize: 100,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold),
                       ),
                     ],
                   ),
@@ -130,8 +151,78 @@ class WeatherDetailedInfoScreen extends StatelessWidget {
                 ],
               ),
             ),
+          ),
+          const SizedBox(height: 30),
+          const Text(
+            'Hourly',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 25,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: exactHourWeatherWidgetList,
           )
         ],
+      ),
+    );
+  }
+}
+
+class _ExactHourWeatherWidget extends StatelessWidget {
+  final int hour;
+  final int temperature;
+
+  const _ExactHourWeatherWidget({
+    required this.hour,
+    required this.temperature,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(6.0),
+      child: SizedBox(
+        height: 150,
+        width: 50,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            borderRadius: const BorderRadius.all(
+              Radius.circular(50),
+            ),
+            color: Colors.teal.shade800,
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                '$hour:00',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 15,
+                ),
+              ),
+              const SizedBox(height: 20),
+              const Icon(
+                Icons.wb_sunny_rounded,
+                color: Colors.white,
+                size: 30,
+              ),
+              const SizedBox(height: 20),
+              Text(
+                '$temperature°',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

@@ -17,13 +17,31 @@ class SetCityScreen extends StatelessWidget {
       child: Container(
         color: Colors.teal,
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            _SetCityIcon(),
-            SizedBox(height: 20),
-            _SetCityTextField(),
-            SizedBox(height: 20),
-            _SetCityElevatedButton(),
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            const SizedBox(height: 120),
+            Text(
+              'YaRamis',
+              style: TextStyle(
+                color: Colors.teal.shade800,
+                fontSize: 50,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Text(
+              'Weather App',
+              style: TextStyle(
+                color: Colors.teal.shade800,
+                fontSize: 50,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 40),
+            const _SetCityIcon(),
+            const SizedBox(height: 20),
+            const _SetCityTextField(),
+            const SizedBox(height: 20),
+            const _SetCityElevatedButton(),
           ],
         ),
       ),
