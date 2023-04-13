@@ -1,5 +1,3 @@
-// import 'package:flutter/material.dart';
-
 part of '../app.dart';
 
 /*
@@ -12,6 +10,7 @@ First element has lowest temperature.
 class ThreeDaysWeatherScreenWidget extends StatelessWidget {
   const ThreeDaysWeatherScreenWidget({Key? key}) : super(key: key);
 
+  // Метод для получения списка виджетов погоды на следующие 3 дня
   List<_ExactDayWeatherWidget> _getExactDayWeatherWidgetList() {
     List<_ExactDayWeatherWidget> list = [];
 
@@ -41,100 +40,159 @@ class ThreeDaysWeatherScreenWidget extends StatelessWidget {
   }
 }
 
+// Виджет отображения данных о погоде в день
 class _ExactDayWeatherWidget extends StatelessWidget {
   final int index;
-  // late final double temperature;
 
   const _ExactDayWeatherWidget(this.index);
 
   @override
   Widget build(BuildContext context) {
+    final state = weatherBloc.state as WeatherLoadedState;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
       child: Container(
         width: 400,
         height: 210,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(50),
-          color: Colors.teal,
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: BlocBuilder<WeatherBloc, WeatherState>(
-            bloc: weatherBloc,
-            builder: (context, state) {
-              final localState = state as WeatherLoadedState;
-              return Column(
-                children: [
-                  Text(
-                    localState.weatherForecast.forecast.forecastDay[index].date,
-                    style: const TextStyle(color: Colors.white, fontSize: 15),
+        padding: const EdgeInsets.all(20.0),
+        decoration: AppBoxDecorations.defaultLightBoxDecoration,
+        child: Column(
+          children: [
+            _ExactDayWeatherDateText(state: state, index: index),
+            const SizedBox(height: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _ExactDayWeatherImage(state: state, index: index),
+                const SizedBox(width: 20),
+                _ExactDayWeatherTemperatureText(state: state, index: index),
+              ],
+            ),
+            const SizedBox(height: 5),
+            _ExactDayWeatherDescriptionText(state: state, index: index),
+            const SizedBox(height: 19),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                AppIconWidgets.humiditySmallIcon,
+                const SizedBox(width: 10),
+                const Text(
+                  'Humidity',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 15,
                   ),
-                  const SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image(
-                        image: NetworkImage(
-                            'http:${localState.weatherForecast.forecast.forecastDay[index].day.condition.icon}'),
-                      ),
-                      const SizedBox(width: 20),
-                      Text(
-                        '${localState.weatherForecast.forecast.forecastDay[index].day.avgTemperature}°',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 40,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 5),
-                  Text(
-                    localState.weatherForecast.forecast.forecastDay[index].day
-                        .condition.text,
-                    style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 19),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(
-                        Icons.water_drop_rounded,
-                        size: 15,
-                        color: Colors.white,
-                      ),
-                      const SizedBox(width: 10),
-                      const Text(
-                        'Humidity',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 15,
-                        ),
-                      ),
-                      const SizedBox(width: 5),
-                      Text(
-                        '${localState.weatherForecast.forecast.forecastDay[index].day.avgHumidity} %',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 15,
-                        ),
-                      )
-                    ],
-                  ),
-                  // const Text(
-                  //   'Humidity 70%',
-                  //   style: TextStyle(color: Colors.white, fontSize: 15),
-                  // ),
-                ],
-              );
-            },
-          ),
+                ),
+                const SizedBox(width: 5),
+                _ExactDayWeatherHumidityPercentText(state: state, index: index)
+              ],
+            ),
+          ],
         ),
       ),
+    );
+  }
+}
+
+class _ExactDayWeatherHumidityPercentText extends StatelessWidget {
+  const _ExactDayWeatherHumidityPercentText({
+    super.key,
+    required this.state,
+    required this.index,
+  });
+
+  final WeatherLoadedState state;
+  final int index;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      '${state.weatherForecast.forecast.forecastDay[index].day.avgHumidity} %',
+      style: const TextStyle(
+        color: Colors.white,
+        fontSize: 15,
+      ),
+    );
+  }
+}
+
+class _ExactDayWeatherDescriptionText extends StatelessWidget {
+  const _ExactDayWeatherDescriptionText({
+    super.key,
+    required this.state,
+    required this.index,
+  });
+
+  final WeatherLoadedState state;
+  final int index;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      state.weatherForecast.forecast.forecastDay[index].day.condition.text,
+      style: const TextStyle(
+          color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+    );
+  }
+}
+
+class _ExactDayWeatherTemperatureText extends StatelessWidget {
+  const _ExactDayWeatherTemperatureText({
+    super.key,
+    required this.state,
+    required this.index,
+  });
+
+  final WeatherLoadedState state;
+  final int index;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      '${state.weatherForecast.forecast.forecastDay[index].day.avgTemperature}°',
+      style: const TextStyle(
+        color: Colors.white,
+        fontSize: 40,
+        fontWeight: FontWeight.bold,
+      ),
+    );
+  }
+}
+
+class _ExactDayWeatherImage extends StatelessWidget {
+  const _ExactDayWeatherImage({
+    super.key,
+    required this.state,
+    required this.index,
+  });
+
+  final WeatherLoadedState state;
+  final int index;
+
+  @override
+  Widget build(BuildContext context) {
+    return Image(
+      image: NetworkImage(
+          'http:${state.weatherForecast.forecast.forecastDay[index].day.condition.icon}'),
+    );
+  }
+}
+
+class _ExactDayWeatherDateText extends StatelessWidget {
+  const _ExactDayWeatherDateText({
+    super.key,
+    required this.state,
+    required this.index,
+  });
+
+  final WeatherLoadedState state;
+  final int index;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      state.weatherForecast.forecast.forecastDay[index].date,
+      style: const TextStyle(color: Colors.white, fontSize: 15),
     );
   }
 }

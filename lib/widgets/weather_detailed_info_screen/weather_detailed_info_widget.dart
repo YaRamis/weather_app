@@ -1,16 +1,16 @@
-// import 'package:flutter/material.dart';
-// import 'package:weather_app/app_routes/app_routes.dart';
-
 part of '../app.dart';
 
+// Виджет экрана с информацией о текущей погоды и почасовой погоды текущего дня
 class WeatherDetailedInfoScreen extends StatelessWidget {
   const WeatherDetailedInfoScreen({Key? key}) : super(key: key);
 
-  List<_ExactHourWeatherWidget> _getExactHourWeatherWidgetList() {
+  // Метод для получения списка виджетов почасовой погоды из 6 элементов
+  List<_ExactHourWeatherWidget> _getExactHourWeatherWidgetList(
+      {required WeatherLoadedState state}) {
     List<_ExactHourWeatherWidget> list = [];
 
     for (int i = 0; i < 6; i++) {
-      list.add(_ExactHourWeatherWidget(i * 4));
+      list.add(_ExactHourWeatherWidget(index: i * 4, state: state));
     }
 
     return list;
@@ -21,8 +21,9 @@ class WeatherDetailedInfoScreen extends StatelessWidget {
     return BlocBuilder<WeatherBloc, WeatherState>(
         bloc: weatherBloc,
         builder: (context, state) {
-          final exactHourWeatherWidgetList = _getExactHourWeatherWidgetList();
           if (state is WeatherLoadedState) {
+            final exactHourWeatherWidgetList =
+                _getExactHourWeatherWidgetList(state: state);
             _cityName = state.weatherForecast.location.cityName;
             _setCityName();
             return Scaffold(
@@ -33,7 +34,7 @@ class WeatherDetailedInfoScreen extends StatelessWidget {
                 ),
                 shadowColor: Colors.transparent,
                 actions: const [
-                  // _UpdateWeatherDataIconButton(),
+                  _UpdateWeatherDataIconButton(),
                   _ResetCityIconButton(),
                   _ShowThreeDaysWeatherIconButton(),
                 ],
@@ -41,119 +42,7 @@ class WeatherDetailedInfoScreen extends StatelessWidget {
               body: SingleChildScrollView(
                 child: Column(
                   children: [
-                    SizedBox(
-                      width: double.infinity,
-                      height: 450,
-                      child: DecoratedBox(
-                        decoration: BoxDecoration(
-                          borderRadius: const BorderRadius.only(
-                            bottomLeft: Radius.circular(50),
-                            bottomRight: Radius.circular(50),
-                          ),
-                          color: Colors.teal.shade800,
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              state.weatherForecast.current.lastUpdated,
-                              style: const TextStyle(
-                                  color: Colors.white, fontSize: 20),
-                            ),
-                            const SizedBox(height: 20),
-                            Image(
-                              image: NetworkImage(
-                                  'http:${state.weatherForecast.current.condition.icon}'),
-                            ),
-                            const SizedBox(width: 10),
-                            Text(
-                              '${state.weatherForecast.current.temperature}°',
-                              style: const TextStyle(
-                                  fontSize: 100,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            Text(
-                              '${state.weatherForecast.forecast.forecastDay[0].day.maxTemperature}° / ${state.weatherForecast.forecast.forecastDay[0].day.minTemperature}°',
-                              style: const TextStyle(
-                                  color: Colors.white, fontSize: 20),
-                            ),
-                            const SizedBox(height: 5),
-                            Text(
-                              state.weatherForecast.current.condition.text,
-                              style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 25,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            const SizedBox(height: 80),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 50),
-                              child: Row(
-                                children: [
-                                  const Icon(
-                                    Icons.water_drop_rounded,
-                                    size: 20,
-                                    color: Colors.white,
-                                  ),
-                                  const SizedBox(width: 10),
-                                  const Text(
-                                    'Humidity',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 20,
-                                    ),
-                                  ),
-                                  const Spacer(),
-                                  Text(
-                                    '${state.weatherForecast.current.humidity} %',
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 20,
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                            const Padding(
-                              padding: EdgeInsets.only(left: 75, right: 45),
-                              child: Divider(thickness: 1, height: 20),
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 50),
-                              child: Row(
-                                children: [
-                                  const Icon(
-                                    Icons.waves_rounded,
-                                    size: 20,
-                                    color: Colors.white,
-                                  ),
-                                  const SizedBox(width: 10),
-                                  const Text(
-                                    'Wind speed',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 20,
-                                    ),
-                                  ),
-                                  const Spacer(),
-                                  Text(
-                                    '${state.weatherForecast.current.windSpeed} k/h',
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 20,
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                            const SizedBox(height: 15),
-                          ],
-                        ),
-                      ),
-                    ),
+                    _CurrentWeatherWidget(state: state),
                     const SizedBox(height: 30),
                     const Text(
                       'Hourly',
@@ -164,10 +53,9 @@ class WeatherDetailedInfoScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: exactHourWeatherWidgetList,
-                    )
+                    _HourlyWeatherWidget(
+                        exactHourWeatherWidgetList: exactHourWeatherWidgetList,
+                        state: state)
                   ],
                 ),
               ),
@@ -175,7 +63,12 @@ class WeatherDetailedInfoScreen extends StatelessWidget {
           } else if (state is WeatherLoadingState) {
             return const AppCircularProgressIndicator();
           } else if (state is WeatherErrorState) {
-            return const AppErrorWidget();
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              Navigator.of(context)
+                  .pushReplacementNamed(AppRoutes.setCityScreen);
+            });
+            // return const AppErrorWidget();
+            return ColoredBox(color: Colors.teal.shade800);
           } else {
             return ColoredBox(color: Colors.teal.shade800);
           }
@@ -183,64 +76,25 @@ class WeatherDetailedInfoScreen extends StatelessWidget {
   }
 }
 
-class _ExactHourWeatherWidget extends StatelessWidget {
-  final int index;
+class _HourlyWeatherWidget extends StatelessWidget {
+  final WeatherLoadedState state;
+  const _HourlyWeatherWidget({
+    required this.exactHourWeatherWidgetList,
+    required this.state,
+  });
 
-  const _ExactHourWeatherWidget(this.index);
+  final List<_ExactHourWeatherWidget> exactHourWeatherWidgetList;
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<WeatherBloc, WeatherState>(
-      bloc: weatherBloc,
-      builder: (context, state) {
-        final localState = state as WeatherLoadedState;
-        return Padding(
-          padding: const EdgeInsets.all(6.0),
-          child: SizedBox(
-            height: 150,
-            width: 50,
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                borderRadius: const BorderRadius.all(
-                  Radius.circular(50),
-                ),
-                color: Colors.teal.shade800,
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    localState.weatherForecast.forecast.forecastDay[0]
-                        .hour[index].time
-                        .split(' ')[1],
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 15,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Image(
-                      image: NetworkImage(
-                          'http:${localState.weatherForecast.forecast.forecastDay[0].hour[index].condition.icon}')),
-                  const SizedBox(height: 10),
-                  Text(
-                    '${localState.weatherForecast.forecast.forecastDay[0].hour[index].temperature}°',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 17,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: exactHourWeatherWidgetList,
     );
   }
 }
 
+// IconButton для просмотра погоды на следующие 3 дня
 class _ShowThreeDaysWeatherIconButton extends StatelessWidget {
   const _ShowThreeDaysWeatherIconButton();
 
@@ -255,6 +109,7 @@ class _ShowThreeDaysWeatherIconButton extends StatelessWidget {
   }
 }
 
+// IconButton для установки нового города
 class _ResetCityIconButton extends StatelessWidget {
   const _ResetCityIconButton();
 
@@ -262,6 +117,7 @@ class _ResetCityIconButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return IconButton(
       onPressed: () {
+        weatherBloc.emit(WeatherInitial());
         _cityName = '';
         _removeCityName();
         Navigator.of(context).pushReplacementNamed(AppRoutes.setCityScreen);
@@ -271,13 +127,16 @@ class _ResetCityIconButton extends StatelessWidget {
   }
 }
 
+// IconButton для обновления данных о погоде
 class _UpdateWeatherDataIconButton extends StatelessWidget {
   const _UpdateWeatherDataIconButton();
 
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      onPressed: () {},
+      onPressed: () {
+        weatherBloc.add(GetWeatherEvent(cityName: _cityName));
+      },
       icon: const Icon(Icons.restart_alt_rounded),
     );
   }

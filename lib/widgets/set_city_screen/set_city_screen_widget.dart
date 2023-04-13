@@ -1,8 +1,3 @@
-// import 'package:flutter/material.dart';
-// import 'package:weather_app/app_routes/app_routes.dart';
-// import 'package:weather_app/theme/app_button_styles.dart';
-// import 'package:weather_app/theme/app_input_decorations.dart';
-
 part of '../app.dart';
 
 /*
@@ -59,25 +54,89 @@ class SetCityScreen extends StatelessWidget {
   }
 }
 
-class _SetCityElevatedButton extends StatelessWidget {
+class _SetCityElevatedButton extends StatefulWidget {
   const _SetCityElevatedButton();
 
   @override
+  State<_SetCityElevatedButton> createState() => _SetCityElevatedButtonState();
+}
+
+class _SetCityElevatedButtonState extends State<_SetCityElevatedButton> {
+  ValueNotifier<WeatherState> localState = ValueNotifier(WeatherInitial());
+
+  @override
+  void initState() {
+    localState.addListener(() {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (localState.value is WeatherLoadedState) {
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          Navigator.of(context)
+              .pushReplacementNamed(AppRoutes.weatherDetailedInfoScreen);
+        } else if (localState.value is WeatherErrorState) {
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Container(
+              alignment: Alignment.center,
+              child: const Text(
+                'Data request error',
+                style: TextStyle(fontSize: 25),
+              ),
+            ),
+            backgroundColor: Colors.redAccent,
+            behavior: SnackBarBehavior.floating,
+            margin: const EdgeInsets.only(bottom: 300, left: 40, right: 40),
+            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 50),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+            clipBehavior: Clip.hardEdge,
+          ));
+          // weatherBloc.emit(WeatherInitial());
+        } else if (localState.value is WeatherLoadingState) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Container(
+              alignment: Alignment.center,
+              child: const Text(
+                'Please wait',
+                style: TextStyle(fontSize: 25),
+              ),
+            ),
+            duration: const Duration(days: 1),
+            backgroundColor: Colors.teal.shade800,
+            behavior: SnackBarBehavior.floating,
+            margin: const EdgeInsets.only(bottom: 300, left: 40, right: 40),
+            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 50),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+            clipBehavior: Clip.hardEdge,
+          ));
+        }
+      });
+    });
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      style: AppButtonStyles.setCityButtonStyle,
-      onPressed: () {
-        weatherBloc.add(GetWeatherEvent(cityName: _cityName));
-        Navigator.of(context)
-            .pushReplacementNamed(AppRoutes.weatherDetailedInfoScreen);
+    return BlocBuilder<WeatherBloc, WeatherState>(
+      bloc: weatherBloc,
+      builder: (context, state) {
+        localState.value = state;
+        return ElevatedButton(
+          style: AppButtonStyles.setCityButtonStyle,
+          onPressed: () {
+            if (_cityName != '') {
+              weatherBloc.add(GetWeatherEvent(cityName: _cityName));
+            }
+          },
+          child: const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+            child: Text(
+              'Submit',
+              style: TextStyle(fontSize: 25),
+            ),
+          ),
+        );
       },
-      child: const Padding(
-        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-        child: Text(
-          'Submit',
-          style: TextStyle(fontSize: 25),
-        ),
-      ),
     );
   }
 }
