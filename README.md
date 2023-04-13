@@ -6,6 +6,8 @@ Used flutter_bloc state manager.
 
 ## API key trial will end 26.04.2023
 
+### Screenshots
+
 - Set city screen
 
 ![weather_app_set_city_screen](https://user-images.githubusercontent.com/86028695/231737361-b962bc0a-8c32-476d-877d-abd15b90d455.png)
