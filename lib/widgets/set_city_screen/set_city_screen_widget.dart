@@ -66,6 +66,7 @@ class _SetCityElevatedButtonState extends State<_SetCityElevatedButton> {
 
   @override
   void initState() {
+    // Подписываемся на `localeState`
     localState.addListener(() {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (localState.value is WeatherLoadedState) {
@@ -74,45 +75,50 @@ class _SetCityElevatedButtonState extends State<_SetCityElevatedButton> {
               .pushReplacementNamed(AppRoutes.weatherDetailedInfoScreen);
         } else if (localState.value is WeatherErrorState) {
           ScaffoldMessenger.of(context).hideCurrentSnackBar();
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Container(
-              alignment: Alignment.center,
-              child: const Text(
-                'Data request error',
-                style: TextStyle(fontSize: 25),
-              ),
+          ScaffoldMessenger.of(context).showSnackBar(
+            _getAppSnackBar(
+              'Data request error',
+              Colors.redAccent,
             ),
-            backgroundColor: Colors.redAccent,
-            behavior: SnackBarBehavior.floating,
-            margin: const EdgeInsets.only(bottom: 300, left: 40, right: 40),
-            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 50),
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-            clipBehavior: Clip.hardEdge,
-          ));
+          );
           // weatherBloc.emit(WeatherInitial());
         } else if (localState.value is WeatherLoadingState) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Container(
-              alignment: Alignment.center,
-              child: const Text(
-                'Please wait',
-                style: TextStyle(fontSize: 25),
-              ),
+          ScaffoldMessenger.of(context).showSnackBar(
+            _getAppSnackBar(
+              'Please wait',
+              Colors.teal.shade800,
+              extraChild: const AppCircularProgressIndicator(),
+              duration: const Duration(hours: 1),
             ),
-            duration: const Duration(days: 1),
-            backgroundColor: Colors.teal.shade800,
-            behavior: SnackBarBehavior.floating,
-            margin: const EdgeInsets.only(bottom: 300, left: 40, right: 40),
-            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 50),
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-            clipBehavior: Clip.hardEdge,
-          ));
+          );
         }
       });
     });
     super.initState();
+  }
+
+  SnackBar _getAppSnackBar(String text, Color color,
+      {Widget? extraChild, Duration? duration}) {
+    return SnackBar(
+      content: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          extraChild ?? Container(),
+          const SizedBox(width: 15),
+          Text(
+            text,
+            style: const TextStyle(fontSize: 25),
+          ),
+        ],
+      ),
+      backgroundColor: color,
+      behavior: SnackBarBehavior.floating,
+      margin: const EdgeInsets.only(bottom: 300, left: 40, right: 40),
+      padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 50),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+      clipBehavior: Clip.hardEdge,
+      duration: duration ?? const Duration(seconds: 4),
+    );
   }
 
   @override
