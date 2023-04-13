@@ -12,15 +12,11 @@ First element has lowest temperature.
 class ThreeDaysWeatherScreenWidget extends StatelessWidget {
   const ThreeDaysWeatherScreenWidget({Key? key}) : super(key: key);
 
-  List<_ExactDayWeatherWidget> _getExactDayWeatherWidgetList({int count = 3}) {
+  List<_ExactDayWeatherWidget> _getExactDayWeatherWidgetList() {
     List<_ExactDayWeatherWidget> list = [];
 
-    for (int i = 0; i < count; i++) {
-      list.add(const _ExactDayWeatherWidget(
-        date: '08 . 08 . 2002',
-        temperatureMax: 30,
-        temperatureMin: 20,
-      ));
+    for (int i = 0; i < 3; i++) {
+      list.add(_ExactDayWeatherWidget(i));
     }
 
     return list;
@@ -46,15 +42,10 @@ class ThreeDaysWeatherScreenWidget extends StatelessWidget {
 }
 
 class _ExactDayWeatherWidget extends StatelessWidget {
-  final String date;
-  final int temperatureMax;
-  final int temperatureMin;
+  final int index;
+  // late final double temperature;
 
-  const _ExactDayWeatherWidget({
-    required this.date,
-    required this.temperatureMax,
-    required this.temperatureMin,
-  });
+  const _ExactDayWeatherWidget(this.index);
 
   @override
   Widget build(BuildContext context) {
@@ -69,72 +60,78 @@ class _ExactDayWeatherWidget extends StatelessWidget {
         ),
         child: Padding(
           padding: const EdgeInsets.all(20.0),
-          child: Column(
-            children: [
-              Text(
-                date,
-                style: const TextStyle(color: Colors.white, fontSize: 15),
-              ),
-              const SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+          child: BlocBuilder<WeatherBloc, WeatherState>(
+            bloc: weatherBloc,
+            builder: (context, state) {
+              final localState = state as WeatherLoadedState;
+              return Column(
                 children: [
-                  const Icon(
-                    Icons.wb_sunny_rounded,
-                    color: Colors.white,
-                    size: 80,
-                  ),
-                  const SizedBox(width: 20),
                   Text(
-                    '$temperatureMax° / $temperatureMin°',
+                    localState.weatherForecast.forecast.forecastDay[index].date,
+                    style: const TextStyle(color: Colors.white, fontSize: 15),
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image(
+                        image: NetworkImage(
+                            'http:${localState.weatherForecast.forecast.forecastDay[index].day.condition.icon}'),
+                      ),
+                      const SizedBox(width: 20),
+                      Text(
+                        '${localState.weatherForecast.forecast.forecastDay[index].day.avgTemperature}°',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 40,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 5),
+                  Text(
+                    localState.weatherForecast.forecast.forecastDay[index].day
+                        .condition.text,
                     style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 40,
-                      fontWeight: FontWeight.bold,
-                    ),
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold),
                   ),
+                  const SizedBox(height: 19),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(
+                        Icons.water_drop_rounded,
+                        size: 15,
+                        color: Colors.white,
+                      ),
+                      const SizedBox(width: 10),
+                      const Text(
+                        'Humidity',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 15,
+                        ),
+                      ),
+                      const SizedBox(width: 5),
+                      Text(
+                        '${localState.weatherForecast.forecast.forecastDay[index].day.avgHumidity} %',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 15,
+                        ),
+                      )
+                    ],
+                  ),
+                  // const Text(
+                  //   'Humidity 70%',
+                  //   style: TextStyle(color: Colors.white, fontSize: 15),
+                  // ),
                 ],
-              ),
-              const SizedBox(height: 5),
-              const Text(
-                'Weather description',
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 19),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Icon(
-                    Icons.water_drop_rounded,
-                    size: 15,
-                    color: Colors.white,
-                  ),
-                  SizedBox(width: 10),
-                  Text(
-                    'Humidity',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 15,
-                    ),
-                  ),
-                  SizedBox(width: 5),
-                  Text(
-                    '70 %',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 15,
-                    ),
-                  )
-                ],
-              ),
-              // const Text(
-              //   'Humidity 70%',
-              //   style: TextStyle(color: Colors.white, fontSize: 15),
-              // ),
-            ],
+              );
+            },
           ),
         ),
       ),

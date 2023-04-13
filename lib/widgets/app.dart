@@ -4,6 +4,7 @@ import 'package:weather_app/app_routes/app_routes.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weather_app/bloc/weather_bloc/weather_bloc.dart';
 import 'package:weather_app/widgets/app_circular_progress_indicator/app_circular_progress_indicator.dart';
+import 'package:weather_app/widgets/errors/app_error_widget.dart';
 
 import '../theme/app_button_styles.dart';
 import '../theme/app_input_decorations.dart';
@@ -55,6 +56,11 @@ class _AppState extends State<App> {
     setState(() {});
   }
 
+  String _getRouteSavedCity() {
+    weatherBloc.add(GetWeatherEvent(cityName: _cityName));
+    return AppRoutes.weatherDetailedInfoScreen;
+  }
+
   @override
   Widget build(BuildContext context) {
     iteration++;
@@ -71,9 +77,8 @@ class _AppState extends State<App> {
             dividerColor: Colors.white,
           ),
           routes: AppRoutes.routes,
-          initialRoute: _cityName == ''
-              ? AppRoutes.setCityScreen
-              : AppRoutes.weatherDetailedInfoScreen,
+          initialRoute:
+              _cityName == '' ? AppRoutes.setCityScreen : _getRouteSavedCity(),
         ),
       );
     } else {

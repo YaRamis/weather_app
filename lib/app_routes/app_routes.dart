@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../widgets/app.dart';
+import '../widgets/errors/app_error_widget.dart';
 
 /*
 Route-ы экранов приложения.

@@ -6,15 +6,11 @@ part of '../app.dart';
 class WeatherDetailedInfoScreen extends StatelessWidget {
   const WeatherDetailedInfoScreen({Key? key}) : super(key: key);
 
-  List<_ExactHourWeatherWidget> _getExactHourWeatherWidgetList(
-      {int count = 6}) {
+  List<_ExactHourWeatherWidget> _getExactHourWeatherWidgetList() {
     List<_ExactHourWeatherWidget> list = [];
 
-    for (int i = 0; i < count; i++) {
-      list.add(const _ExactHourWeatherWidget(
-        hour: 12,
-        temperature: 20,
-      ));
+    for (int i = 0; i < 6; i++) {
+      list.add(_ExactHourWeatherWidget(i * 4));
     }
 
     return list;
@@ -22,209 +18,225 @@ class WeatherDetailedInfoScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final exactHourWeatherWidgetList = _getExactHourWeatherWidgetList();
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          _cityName,
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
-        shadowColor: Colors.transparent,
-        actions: const [
-          _UpdateWeatherDataIconButton(),
-          _ResetCityIconButton(),
-          _ShowThreeDaysWeatherIconButton(),
-        ],
-      ),
-      body: Column(
-        children: [
-          SizedBox(
-            width: double.infinity,
-            height: 450,
+    return BlocBuilder<WeatherBloc, WeatherState>(
+        bloc: weatherBloc,
+        builder: (context, state) {
+          final exactHourWeatherWidgetList = _getExactHourWeatherWidgetList();
+          if (state is WeatherLoadedState) {
+            _cityName = state.weatherForecast.location.cityName;
+            _setCityName();
+            return Scaffold(
+              appBar: AppBar(
+                title: Text(
+                  _cityName,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                shadowColor: Colors.transparent,
+                actions: const [
+                  // _UpdateWeatherDataIconButton(),
+                  _ResetCityIconButton(),
+                  _ShowThreeDaysWeatherIconButton(),
+                ],
+              ),
+              body: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    SizedBox(
+                      width: double.infinity,
+                      height: 450,
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          borderRadius: const BorderRadius.only(
+                            bottomLeft: Radius.circular(50),
+                            bottomRight: Radius.circular(50),
+                          ),
+                          color: Colors.teal.shade800,
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              state.weatherForecast.current.lastUpdated,
+                              style: const TextStyle(
+                                  color: Colors.white, fontSize: 20),
+                            ),
+                            const SizedBox(height: 20),
+                            Image(
+                              image: NetworkImage(
+                                  'http:${state.weatherForecast.current.condition.icon}'),
+                            ),
+                            const SizedBox(width: 10),
+                            Text(
+                              '${state.weatherForecast.current.temperature}°',
+                              style: const TextStyle(
+                                  fontSize: 100,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              '${state.weatherForecast.forecast.forecastDay[0].day.maxTemperature}° / ${state.weatherForecast.forecast.forecastDay[0].day.minTemperature}°',
+                              style: const TextStyle(
+                                  color: Colors.white, fontSize: 20),
+                            ),
+                            const SizedBox(height: 5),
+                            Text(
+                              state.weatherForecast.current.condition.text,
+                              style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            const SizedBox(height: 80),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 50),
+                              child: Row(
+                                children: [
+                                  const Icon(
+                                    Icons.water_drop_rounded,
+                                    size: 20,
+                                    color: Colors.white,
+                                  ),
+                                  const SizedBox(width: 10),
+                                  const Text(
+                                    'Humidity',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                    ),
+                                  ),
+                                  const Spacer(),
+                                  Text(
+                                    '${state.weatherForecast.current.humidity} %',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                            const Padding(
+                              padding: EdgeInsets.only(left: 75, right: 45),
+                              child: Divider(thickness: 1, height: 20),
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 50),
+                              child: Row(
+                                children: [
+                                  const Icon(
+                                    Icons.waves_rounded,
+                                    size: 20,
+                                    color: Colors.white,
+                                  ),
+                                  const SizedBox(width: 10),
+                                  const Text(
+                                    'Wind speed',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                    ),
+                                  ),
+                                  const Spacer(),
+                                  Text(
+                                    '${state.weatherForecast.current.windSpeed} k/h',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 15),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 30),
+                    const Text(
+                      'Hourly',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 25,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: exactHourWeatherWidgetList,
+                    )
+                  ],
+                ),
+              ),
+            );
+          } else if (state is WeatherLoadingState) {
+            return const AppCircularProgressIndicator();
+          } else if (state is WeatherErrorState) {
+            return const AppErrorWidget();
+          } else {
+            return ColoredBox(color: Colors.teal.shade800);
+          }
+        });
+  }
+}
+
+class _ExactHourWeatherWidget extends StatelessWidget {
+  final int index;
+
+  const _ExactHourWeatherWidget(this.index);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<WeatherBloc, WeatherState>(
+      bloc: weatherBloc,
+      builder: (context, state) {
+        final localState = state as WeatherLoadedState;
+        return Padding(
+          padding: const EdgeInsets.all(6.0),
+          child: SizedBox(
+            height: 150,
+            width: 50,
             child: DecoratedBox(
               decoration: BoxDecoration(
-                borderRadius: const BorderRadius.only(
-                  bottomLeft: Radius.circular(50),
-                  bottomRight: Radius.circular(50),
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(50),
                 ),
                 color: Colors.teal.shade800,
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text(
-                    'Sat, 12.04.2023 1:58',
-                    style: TextStyle(color: Colors.white, fontSize: 20),
-                  ),
-                  const SizedBox(height: 80),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      Icon(
-                        Icons.wb_sunny_rounded,
-                        size: 100,
-                        color: Colors.white,
-                      ),
-                      SizedBox(width: 10),
-                      Text(
-                        '25°',
-                        style: TextStyle(
-                            fontSize: 100,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                  const Text(
-                    '30° / 20°',
-                    style: TextStyle(color: Colors.white, fontSize: 20),
-                  ),
-                  const SizedBox(height: 5),
-                  const Text(
-                    'Weather description',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 80),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 50),
-                    child: Row(
-                      children: const [
-                        Icon(
-                          Icons.water_drop_rounded,
-                          size: 20,
-                          color: Colors.white,
-                        ),
-                        SizedBox(width: 10),
-                        Text(
-                          'Humidity',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
-                          ),
-                        ),
-                        Spacer(),
-                        Text(
-                          '70 %',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
-                          ),
-                        )
-                      ],
+                  Text(
+                    localState.weatherForecast.forecast.forecastDay[0]
+                        .hour[index].time
+                        .split(' ')[1],
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 15,
                     ),
                   ),
-                  const Padding(
-                    padding: EdgeInsets.only(left: 75, right: 45),
-                    child: Divider(thickness: 1, height: 20),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 50),
-                    child: Row(
-                      children: const [
-                        Icon(
-                          Icons.waves_rounded,
-                          size: 20,
-                          color: Colors.white,
-                        ),
-                        SizedBox(width: 10),
-                        Text(
-                          'Wind speed',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
-                          ),
-                        ),
-                        Spacer(),
-                        Text(
-                          '10 m/s',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
-                          ),
-                        )
-                      ],
+                  const SizedBox(height: 10),
+                  Image(
+                      image: NetworkImage(
+                          'http:${localState.weatherForecast.forecast.forecastDay[0].hour[index].condition.icon}')),
+                  const SizedBox(height: 10),
+                  Text(
+                    '${localState.weatherForecast.forecast.forecastDay[0].hour[index].temperature}°',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 17,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 15),
                 ],
               ),
             ),
           ),
-          const SizedBox(height: 30),
-          const Text(
-            'Hourly',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 25,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: exactHourWeatherWidgetList,
-          )
-        ],
-      ),
-    );
-  }
-}
-
-class _ExactHourWeatherWidget extends StatelessWidget {
-  final int hour;
-  final int temperature;
-
-  const _ExactHourWeatherWidget({
-    required this.hour,
-    required this.temperature,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(6.0),
-      child: SizedBox(
-        height: 150,
-        width: 50,
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.all(
-              Radius.circular(50),
-            ),
-            color: Colors.teal.shade800,
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                '$hour:00',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 15,
-                ),
-              ),
-              const SizedBox(height: 20),
-              const Icon(
-                Icons.wb_sunny_rounded,
-                color: Colors.white,
-                size: 30,
-              ),
-              const SizedBox(height: 20),
-              Text(
-                '$temperature°',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

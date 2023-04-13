@@ -15,40 +15,43 @@ class SetCityScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: GestureDetector(
-        onTap: () {
-          FocusScope.of(context).requestFocus(FocusNode());
-        },
-        child: Container(
-          color: Colors.teal,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              const SizedBox(height: 120),
-              Text(
-                'YaRamis',
-                style: TextStyle(
-                  color: Colors.teal.shade800,
-                  fontSize: 50,
-                  fontWeight: FontWeight.bold,
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: GestureDetector(
+          onTap: () {
+            FocusScope.of(context).requestFocus(FocusNode());
+          },
+          child: Container(
+            alignment: Alignment.center,
+            color: Colors.teal,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                const SizedBox(height: 120),
+                Text(
+                  'YaRamis',
+                  style: TextStyle(
+                    color: Colors.teal.shade800,
+                    fontSize: 50,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-              Text(
-                'Weather App',
-                style: TextStyle(
-                  color: Colors.teal.shade800,
-                  fontSize: 50,
-                  fontWeight: FontWeight.bold,
+                Text(
+                  'Weather App',
+                  style: TextStyle(
+                    color: Colors.teal.shade800,
+                    fontSize: 50,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 40),
-              const _SetCityIcon(),
-              const SizedBox(height: 20),
-              const _SetCityTextField(),
-              const SizedBox(height: 20),
-              const _SetCityElevatedButton(),
-            ],
+                const SizedBox(height: 40),
+                const _SetCityIcon(),
+                const SizedBox(height: 20),
+                const _SetCityTextField(),
+                const SizedBox(height: 20),
+                const _SetCityElevatedButton(),
+              ],
+            ),
           ),
         ),
       ),
@@ -64,10 +67,9 @@ class _SetCityElevatedButton extends StatelessWidget {
     return ElevatedButton(
       style: AppButtonStyles.setCityButtonStyle,
       onPressed: () {
-        if (_cityName != '') {
-          Navigator.of(context)
-              .pushReplacementNamed(AppRoutes.weatherDetailedInfoScreen);
-        }
+        weatherBloc.add(GetWeatherEvent(cityName: _cityName));
+        Navigator.of(context)
+            .pushReplacementNamed(AppRoutes.weatherDetailedInfoScreen);
       },
       child: const Padding(
         padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),

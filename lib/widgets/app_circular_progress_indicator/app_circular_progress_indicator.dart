@@ -9,11 +9,10 @@ class AppCircularProgressIndicator extends StatelessWidget {
       color: Colors.teal.shade800,
       child: const Center(
         child: SizedBox(
-          height: 200,
-          width: 200,
+          height: 20,
+          width: 20,
           child: CircularProgressIndicator(
             color: Colors.teal,
-            strokeWidth: 20,
           ),
         ),
       ),
